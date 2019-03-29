@@ -38,7 +38,7 @@ public class PersonaDAO {
 			while (resultado.next())
 				lista.add(new Persona(resultado.getInt("id"), resultado.getString("first_name"),
 						resultado.getString("last_name"), resultado.getString("email")));
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,9 +63,48 @@ public class PersonaDAO {
 		}
 		return persona;
 	}
-	
-	public boolean borrarPersona(String mail) {
-		return false;
+
+	public boolean borrarPersona(String email) {
+		int rows = 0;
+		String sql = "DELETE FROM persona WHERE email = ?;";
+		try (PreparedStatement psStatement = conexion.prepareStatement(sql);){
+			psStatement.setString(1, email);
+			rows = psStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows != 0;
+	}
+
+	public boolean actualizarPersona(int id, String email) {
+		int rows = 0;
+		String sql = "UPDATE persona SET email = ? WHERE id = ?;";
+		try (PreparedStatement psStatement = conexion.prepareStatement(sql);){
+			psStatement.setString(1, email);
+			psStatement.setInt(2, id);
+			rows = psStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows != 0;
 	}
 	
+	public boolean insertarPersona(Persona persona) {
+		int rows = 0;
+		String sql = "INSERT INTO persona VALUES (?, ?, ?, ?);";
+		try (PreparedStatement psStatement = conexion.prepareStatement(sql);){
+			psStatement.setInt(1, persona.getId());
+			psStatement.setString(2, persona.getFirstName());
+			psStatement.setString(3, persona.getLastName());
+			psStatement.setString(4, persona.getEmail());
+			rows = psStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows != 0;
+	}
+
 }
